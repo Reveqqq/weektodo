@@ -1,0 +1,30 @@
+.task-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.task-row {
+  cursor: pointer;
+  /* existing styles may be here */
+}
+
+.hover-card {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  pointer-events: auto;
+  z-index: 10;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  min-width: 200px;
+  /* existing styles may be here */
+}
+
+/* optional hidden state */
+.hover-card--hidden {
+  display: none;
+}

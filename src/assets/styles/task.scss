@@ -1,0 +1,60 @@
+```scss
+/* src/assets/styles/task.scss */
+
+.task-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  /* Ensure the wrapper captures hover events */
+  pointer-events: auto;
+}
+
+.task-row {
+  flex: 1 1 auto;
+  padding: 8px 12px;
+  background-color: var(--task-bg, #fff);
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+
+  &:hover,
+  .task-wrapper.is-hover & {
+    background-color: var(--task-hover-bg, #f5f7fa);
+  }
+}
+
+/* Hover card (popper) */
+.hover-card {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 260px;
+  margin-top: 4px; /* offset from the task row */
+  padding: 12px;
+  background-color: var(--card-bg, #fff);
+  border: 1px solid var(--card-border, #dcdcdc);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  z-index: 10; /* above the task list */
+  pointer-events: auto; /* allow interaction */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s ease-in-out, visibility 0.12s ease-in-out;
+
+  &.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Prevent the next task row from being hovered while the card is open */
+.task-wrapper.is-hover + .task-row {
+  pointer-events: none;
+}
+
+/* Compact view adjustments */
+.compact .task-row {
+  padding: 4px 8px;
+  font-size: 0.875rem;
+}
+```
