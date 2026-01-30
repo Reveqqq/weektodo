@@ -27,13 +27,33 @@ def get_llm():
         base_url=os.environ.get("OPENAI_BASE_URL")
     )
 
+def extract_json(text: str) -> dict:
+    """Извлекает JSON из ответа LLM даже если он в ```json блоке"""
+    text = text.strip()
+
+    # убираем markdown блоки
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z]*\n", "", text)
+        text = text.rstrip("`").strip()
+
+    # пробуем найти JSON внутри текста
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if match:
+        text = match.group(0)
+
+    return json.loads(text)
 
 def generate_review_comment(diff: str, issue_body: str) -> dict:
     """Генерирует review комментарий с анализом PR через LangChain ChatOpenAI"""
     if not HAS_LLM:
         return {"summary": "Basic review (LLM not available)", "issues": [], "decision": "COMMENT"}
     
-    llm = get_llm()
+    llm = get_llm().with_structured_output({
+        "summary": str,
+        "issues": list,
+        "decision": str
+    })
+    
     prompt = (
         "Ты - code reviewer для GitHub.\n\n"
         "Issue была:\n"
@@ -41,18 +61,19 @@ def generate_review_comment(diff: str, issue_body: str) -> dict:
         "Изменения в PR (diff):\n"
         f"{diff}\n\n"
         "Дай краткую оценку в JSON формате:\n"
+        "Верни ТОЛЬКО чистый JSON. "
+        "НЕ используй markdown, НЕ используй ```json блоки.\n\n"
         "{\n  \"summary\": \"1-2 предложения об изменениях\",\n  \"issues\": [],\n  \"decision\": \"APPROVE\" or \"REQUEST_CHANGES\"\n}"
     )
 
     try:
         response = llm.invoke(prompt)
         text = response.content.strip()
-        return json.loads(text)
-    except json.JSONDecodeError:
-        return {"summary": text, "issues": [], "decision": "COMMENT"}
+        return extract_json(text)
     except Exception as e:
         print(f"[Reviewer] LLM error: {e}")
-        return {"summary": f"Error: {e}", "issues": [], "decision": "COMMENT"}
+        return {"summary": str(text), "issues": [], "decision": "COMMENT"}
+
 
 def get_pr_info():
     """Получает информацию о PR из GitHub Actions события"""
@@ -170,8 +191,8 @@ def main():
         comment_body, decision = generate_review(repo, pr)
         
         # Постим комментарий
-        pr.create_issue_comment(comment_body)
-        print(f"[Reviewer] Комментарий опубликован")
+        # pr.create_issue_comment(comment_body)
+        # print(f"[Reviewer] Комментарий опубликован")
         
         # Пытаемся создать официальный review
         event_map = {
