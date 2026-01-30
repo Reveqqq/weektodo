@@ -1,0 +1,36 @@
+```css
+.task-hover-card {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.task-hover-card-visible {
+  pointer-events: auto;
+}
+
+.task-hover-area {
+  position: relative;
+}
+
+.task-hover-area:hover .task-hover-card {
+  opacity: 1;
+}
+
+.task-hover-card-position-top {
+  bottom: calc(100% + 8px);
+}
+
+.task-hover-card-position-bottom {
+  top: calc(100% + 8px);
+}
+
+.task-hover-card-position-left {
+  right: calc(100% + 8px);
+}
+
+.task-hover-card-position-right {
+  left: calc(100% + 8px);
+}
+```

@@ -1,0 +1,57 @@
+```scss
+.task-item {
+  position: relative;
+
+  &:hover {
+    .task-hover-card {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+  }
+}
+
+.task-hover-card {
+  position: absolute;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  width: 280px;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px;
+
+  &--top {
+    bottom: calc(100% + 8px);
+  }
+
+  &--bottom {
+    top: calc(100% + 8px);
+  }
+
+  &--left {
+    right: calc(100% + 8px);
+  }
+
+  &--right {
+    left: calc(100% + 8px);
+  }
+}
+
+.task-hover-container {
+  position: relative;
+  display: inline-block;
+
+  &:hover {
+    .task-hover-card {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+  }
+}
+```
