@@ -17,7 +17,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install deps
-        run: pip install PyGithub openai
+        run: pip install PyGithub openai langchain-openai
 
       - name: Run reviewer
         env:
