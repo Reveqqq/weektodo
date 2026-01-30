@@ -25,21 +25,21 @@
     pointer-events: auto;
   }
 
-  &[data-popper-placement^='top'] {
+  &[data-popper-placement^="top"] {
     top: auto;
     bottom: 100%;
     margin-top: 0;
     margin-bottom: 4px;
   }
 
-  &[data-popper-placement^='right'] {
+  &[data-popper-placement^="right"] {
     left: 100%;
     top: 0;
     margin-top: 0;
     margin-left: 4px;
   }
 
-  &[data-popper-placement^='left'] {
+  &[data-popper-placement^="left"] {
     right: 100%;
     top: 0;
     margin-top: 0;

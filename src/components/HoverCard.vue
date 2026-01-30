@@ -12,12 +12,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, defineProps, defineEmits } from 'vue'
+import {
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  defineProps,
+  defineEmits,
+  defineOptions,
+} from 'vue'
 import {
   createPopper,
   type Instance as PopperInstance,
   type Placement,
 } from '@popperjs/core'
+
+defineOptions({ name: 'HoverCard' })
 
 const props = defineProps<{
   /** Element that triggers the hover card (the task row) */

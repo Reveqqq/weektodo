@@ -24,21 +24,21 @@ import { ref, onBeforeUnmount } from 'vue'
 import HoverCard from './HoverCard.vue'
 
 const showHover = ref(false)
-const hideTimeout = ref(null)
-const taskRef = ref(null)
+let hideTimeout: ReturnType<typeof setTimeout> | null = null
+const taskRef = ref<HTMLElement | null>(null)
 
 function clearHide() {
-  if (hideTimeout.value) {
-    clearTimeout(hideTimeout.value)
-    hideTimeout.value = null
+  if (hideTimeout) {
+    clearTimeout(hideTimeout)
+    hideTimeout = null
   }
 }
 
 function scheduleHide() {
   clearHide()
-  hideTimeout.value = setTimeout(() => {
+  hideTimeout = setTimeout(() => {
     showHover.value = false
-    hideTimeout.value = null
+    hideTimeout = null
   }, 200)
 }
 

@@ -30,21 +30,21 @@ const props = defineProps({
 });
 
 const showHover = ref(false);
-const hideTimeout = ref(null);
+let hideTimeout = null;
 const taskRef = ref(null);
 
 function clearHide() {
-  if (hideTimeout.value) {
-    clearTimeout(hideTimeout.value);
-    hideTimeout.value = null;
+  if (hideTimeout !== null) {
+    clearTimeout(hideTimeout);
+    hideTimeout = null;
   }
 }
 
 function scheduleHide() {
   clearHide();
-  hideTimeout.value = setTimeout(() => {
+  hideTimeout = setTimeout(() => {
     showHover.value = false;
-    hideTimeout.value = null;
+    hideTimeout = null;
   }, 200);
 }
 

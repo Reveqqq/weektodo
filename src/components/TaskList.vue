@@ -18,5 +18,7 @@ const store = useTaskStore();
 const tasks = computed(() => store.tasks);
 </script>
 
-<style scoped src="./styles/_task-list.scss"></style>
+<style scoped lang="scss">
+@import "./styles/_task-list.scss";
+</style>
 ```

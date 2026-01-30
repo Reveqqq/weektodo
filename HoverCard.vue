@@ -11,12 +11,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
-import { createPopper, type Instance as PopperInstance } from '@popperjs/core'
+defineOptions({ name: 'HoverCard' })
 
 const props = defineProps<{
   /** Element that triggers the hover card (the task row) */
-  reference: HTMLElement
+  referenceEl: HTMLElement | null
 }>()
 
 const emit = defineEmits<{
@@ -25,11 +24,11 @@ const emit = defineEmits<{
 }>()
 
 const popperEl = ref<HTMLElement | null>(null)
-let popperInstance: PopperInstance | null = null
+let popperInstance: Instance | null = null
 
 const initPopper = () => {
-  if (props.reference && popperEl.value) {
-    popperInstance = createPopper(props.reference, popperEl.value, {
+  if (props.referenceEl && popperEl.value) {
+    popperInstance = createPopper(props.referenceEl, popperEl.value, {
       placement: 'bottom',
       modifiers: [
         { name: 'offset', options: { offset: [0, 8] } },
@@ -46,7 +45,7 @@ const destroyPopper = () => {
 }
 
 watch(
-  () => props.reference,
+  () => props.referenceEl,
   () => {
     destroyPopper()
     initPopper()
