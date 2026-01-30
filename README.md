@@ -5,6 +5,8 @@
 
 WeekToDo is a free minimalist weekly planner app focused on privacy. Schedule your tasks and projects with to do lists and a calendar. Available for Windows, Mac, Linux or online.
 
+test_line
+
 ![Logo](https://weektodo.me/weektodo-preview.webp)
 
 ## Features
