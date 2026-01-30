@@ -1,0 +1,26 @@
+```scss
+/* src/assets/styles/_hover-card.scss */
+
+.hover-card {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  margin-top: 4px;
+  padding: 0.5rem 0.75rem;
+  background: var(--hover-card-bg, #fff);
+  border: 1px solid var(--hover-card-border, #e0e0e0);
+  border-radius: var(--border-radius, 4px);
+  box-shadow: var(--hover-card-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
+  z-index: 1000;
+  pointer-events: auto;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+
+  &.is-visible {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+```
