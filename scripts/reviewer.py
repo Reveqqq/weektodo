@@ -126,6 +126,12 @@ def check_ci_status(repo, pr):
 
 def generate_review(repo, pr):
     """Генерирует review комментарий"""
+
+    ci_status = "unknown"
+    try:
+        ci_status = check_ci_status(repo, pr)
+    except Exception as e:
+        print(f"[Reviewer] CI status error: {e}")
     
     if HAS_LLM:
         # Анализируем с помощью LLM
@@ -146,12 +152,23 @@ def generate_review(repo, pr):
         summary = "PR successfully analyzed by AI Reviewer"
         issues = []
         decision = "COMMENT"
+        
+    if ci_status in ["pending", "unknown"]:
+        decision = "COMMENT"
+        summary = "CI ещё не завершён. Ревью будет обновлено после завершения CI."
+    elif ci_status != "success":
+        decision = "REQUEST_CHANGES"
+        summary = (
+            f"CI failed (`{ci_status}`).\n\n"
+            "Исправь ошибки тестов / линтера перед повторным ревью."
 
     # Формируем комментарий
     comment_lines = [
         "## 🤖 AI Reviewer Report",
         "",
         f"**Summary:** {summary}",
+        "",
+        f"### CI Status: `{ci_status.upper()}`",
         ""
     ]
 
@@ -169,7 +186,6 @@ def generate_review(repo, pr):
         pass
 
     comment_lines.extend([
-        "",
         f"### Decision: `{decision}`",
         "_Review performed by AI Code Reviewer_"
     ])
