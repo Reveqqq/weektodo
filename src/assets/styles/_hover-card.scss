@@ -18,9 +18,34 @@
   opacity: 0;
   transition: opacity 0.15s ease, visibility 0.15s ease;
 
+  /* Visible state – component adds the `is-visible` class */
   &.is-visible {
     visibility: visible;
     opacity: 1;
+  }
+
+  /* Placement modifiers – used by Popper via `data-popper-placement` */
+  &[data-popper-placement^='top'] {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+
+  &[data-popper-placement^='right'] {
+    left: 100%;
+    top: 0;
+    margin-top: 0;
+    margin-left: 4px;
+    margin-right: 0;
+  }
+
+  &[data-popper-placement^='left'] {
+    right: 100%;
+    top: 0;
+    margin-top: 0;
+    margin-right: 4px;
+    margin-left: 0;
   }
 }
 ```

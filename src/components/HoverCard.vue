@@ -3,6 +3,7 @@
   <div
     ref="cardRef"
     class="hover-card"
+    :class="{ 'is-visible': visible }"
     @mouseenter="onCardEnter"
     @mouseleave="onCardLeave"
   >
@@ -12,13 +13,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, defineEmits, defineProps } from 'vue'
-import { createPopper, Instance as PopperInstance, Placement } from '@popperjs/core'
+import { createPopper, type Instance as PopperInstance, type Placement } from '@popperjs/core'
 
 const props = defineProps<{
   /** Element that triggers the hover card (the task row) */
-  referenceEl: HTMLElement | null
+  reference: HTMLElement | null
   /** Preferred placement – defaults to 'bottom' */
   placement?: Placement
+  /** Control visibility of the card */
+  visible?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -30,12 +33,13 @@ const cardRef = ref<HTMLElement | null>(null)
 let popperInstance: PopperInstance | null = null
 
 const initPopper = () => {
-  if (props.referenceEl && cardRef.value) {
-    popperInstance = createPopper(props.referenceEl, cardRef.value, {
+  if (props.reference && cardRef.value) {
+    popperInstance = createPopper(props.reference, cardRef.value, {
       placement: props.placement ?? 'bottom',
       modifiers: [
         { name: 'offset', options: { offset: [0, 8] } },
         { name: 'preventOverflow', options: { padding: 8 } },
+        { name: 'flip', options: { fallbackPlacements: ['top', 'right', 'left'] } },
       ],
     })
   }
@@ -48,9 +52,9 @@ const destroyPopper = () => {
   }
 }
 
-/* Re‑init popper when reference element becomes available */
+/* Re‑init popper when reference element changes */
 watch(
-  () => props.referenceEl,
+  () => props.reference,
   (newRef) => {
     destroyPopper()
     if (newRef) initPopper()
@@ -66,13 +70,8 @@ onBeforeUnmount(() => {
   destroyPopper()
 })
 
-const onCardEnter = () => {
-  emit('card-enter')
-}
-
-const onCardLeave = () => {
-  emit('card-leave')
-}
+const onCardEnter = () => emit('card-enter')
+const onCardLeave = () => emit('card-leave')
 </script>
 
 <style scoped>
@@ -84,6 +83,11 @@ const onCardLeave = () => {
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   padding: 12px;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+.hover-card.is-visible {
+  opacity: 1;
 }
 </style>
 ```

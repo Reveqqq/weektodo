@@ -1,11 +1,18 @@
+```vue
 <template>
-  <div class="task-item" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave" ref="taskRef">
+  <div
+    class="task-item"
+    @mouseenter="onMouseEnter"
+    @mouseleave="onMouseLeave"
+    ref="taskRef"
+  >
     <div class="task-content">
       <slot />
     </div>
+
     <HoverCard
       v-if="showHover"
-      :reference="taskRef"
+      :referenceEl="taskRef"
       @card-enter="clearHide"
       @card-leave="scheduleHide"
     />
@@ -54,3 +61,4 @@ onBeforeUnmount(() => {
   position: relative;
 }
 </style>
+```

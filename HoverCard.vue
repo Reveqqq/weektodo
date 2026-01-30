@@ -3,6 +3,7 @@
   <div
     ref="popperEl"
     class="hover-card"
+    :class="{ 'is-visible': true }"
     @mouseenter="onCardEnter"
     @mouseleave="onCardLeave"
   >
@@ -17,8 +18,6 @@ import { createPopper, type Instance as PopperInstance } from '@popperjs/core'
 const props = defineProps<{
   /** Element that triggers the hover card (the task row) */
   referenceEl: HTMLElement
-  /** Controls visibility – parent toggles via v-if */
-  /** (kept for type completeness, not used directly) */
 }>()
 
 const emit = defineEmits<{
@@ -36,15 +35,15 @@ const initPopper = () => {
       modifiers: [
         {
           name: 'offset',
-          options: {
-            offset: [0, 8],
-          },
+          options: { offset: [0, 8] },
         },
         {
           name: 'preventOverflow',
-          options: {
-            boundary: 'clippingParents',
-          },
+          options: { boundary: 'clippingParents' },
+        },
+        {
+          name: 'flip',
+          options: { fallbackPlacements: ['top'] },
         },
       ],
     })
@@ -58,15 +57,9 @@ const destroyPopper = () => {
   }
 }
 
-const onCardEnter = () => {
-  emit('card-enter')
-}
+const onCardEnter = () => emit('card-enter')
+const onCardLeave = () => emit('card-leave')
 
-const onCardLeave = () => {
-  emit('card-leave')
-}
-
-/* Re‑initialize popper if the reference element changes */
 watch(
   () => props.referenceEl,
   () => {
@@ -75,13 +68,8 @@ watch(
   },
 )
 
-onMounted(() => {
-  initPopper()
-})
-
-onBeforeUnmount(() => {
-  destroyPopper()
-})
+onMounted(initPopper)
+onBeforeUnmount(destroyPopper)
 </script>
 
 <style scoped>
@@ -93,6 +81,10 @@ onBeforeUnmount(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   padding: 0.75rem;
+}
+.is-visible {
+  opacity: 1;
+  transition: opacity 0.15s ease-in-out;
 }
 </style>
 ```

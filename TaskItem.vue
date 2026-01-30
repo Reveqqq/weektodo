@@ -6,10 +6,8 @@
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <!-- Содержимое задачи (может быть слотом или прямым выводом) -->
     <slot />
 
-    <!-- Hover‑card, отображается внутри задачи -->
     <HoverCard
       v-if="showHover"
       :task="task"
