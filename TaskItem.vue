@@ -11,6 +11,7 @@
     <HoverCard
       v-if="showHover"
       :task="task"
+      :reference-el="taskRef"
       @card-enter="onCardEnter"
       @card-leave="onCardLeave"
     />

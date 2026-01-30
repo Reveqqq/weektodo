@@ -13,18 +13,18 @@
   border-radius: var(--border-radius, 4px);
   box-shadow: var(--hover-card-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
   z-index: 1000;
-  pointer-events: auto;
+  pointer-events: none;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.15s ease, visibility 0.15s ease;
 
-  /* Visible state – component adds the `is-visible` class */
-  &.is-visible {
+  &.is-visible,
+  &.visible {
     visibility: visible;
     opacity: 1;
+    pointer-events: auto;
   }
 
-  /* Placement modifiers – used by Popper via `data-popper-placement` */
   &[data-popper-placement^='top'] {
     top: auto;
     bottom: 100%;
@@ -37,7 +37,6 @@
     top: 0;
     margin-top: 0;
     margin-left: 4px;
-    margin-right: 0;
   }
 
   &[data-popper-placement^='left'] {
@@ -45,7 +44,6 @@
     top: 0;
     margin-top: 0;
     margin-right: 4px;
-    margin-left: 0;
   }
 }
 ```

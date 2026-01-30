@@ -12,7 +12,7 @@
 
     <HoverCard
       v-if="showHover"
-      :referenceEl="taskRef"
+      :reference="taskRef"
       @card-enter="clearHide"
       @card-leave="scheduleHide"
     />

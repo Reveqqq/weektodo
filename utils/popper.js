@@ -6,18 +6,19 @@ import { createPopper } from '@popperjs/core'
 /**
  * Initialise a Popper.js instance.
  *
- * @param {HTMLElement} referenceEl – Element the popper is attached to.
- * @param {HTMLElement} popperEl – Popper element.
+ * @param {HTMLElement|null|undefined} referenceEl – Element the popper is attached to.
+ * @param {HTMLElement|null|undefined} popperEl – Popper element.
  * @param {Object} [options={}] – Popper options (see Popper docs).
  * @returns {{
  *   instance: import('@popperjs/core').Instance,
  *   destroy: () => void,
  *   update: () => Promise<void>
- * }}
+ * }|null}
  */
 export function initPopper (referenceEl, popperEl, options = {}) {
   if (!referenceEl || !popperEl) {
-    throw new Error('Both referenceEl and popperEl must be provided to initPopper')
+    // Elements are not ready yet – caller should retry later.
+    return null
   }
 
   const defaultOptions = {
@@ -25,15 +26,11 @@ export function initPopper (referenceEl, popperEl, options = {}) {
     modifiers: [
       {
         name: 'offset',
-        options: {
-          offset: [0, 8]
-        }
+        options: { offset: [0, 8] }
       },
       {
         name: 'preventOverflow',
-        options: {
-          boundary: 'clippingParents'
-        }
+        options: { boundary: 'clippingParents' }
       }
     ]
   }
@@ -44,30 +41,21 @@ export function initPopper (referenceEl, popperEl, options = {}) {
     Object.assign({}, defaultOptions, options)
   )
 
+  const update = () => popperInstance.update()
+
   const destroy = () => {
+    window.removeEventListener('resize', resizeHandler)
     popperInstance.destroy()
   }
 
-  const update = () => {
-    return popperInstance.update()
-  }
-
-  // Re‑calculate on viewport changes
   const resizeHandler = () => {
     update()
   }
   window.addEventListener('resize', resizeHandler)
 
-  // Clean up the resize listener when the instance is destroyed
-  const originalDestroy = destroy
-  const wrappedDestroy = () => {
-    window.removeEventListener('resize', resizeHandler)
-    originalDestroy()
-  }
-
   return {
     instance: popperInstance,
-    destroy: wrappedDestroy,
+    destroy,
     update
   }
 }
@@ -75,7 +63,7 @@ export function initPopper (referenceEl, popperEl, options = {}) {
 /**
  * Convenience wrapper to destroy a Popper instance.
  *
- * @param {{ destroy: Function }} popperObj
+ * @param {{ destroy: Function }|null|undefined} popperObj
  */
 export function disposePopper (popperObj) {
   if (popperObj && typeof popperObj.destroy === 'function') {

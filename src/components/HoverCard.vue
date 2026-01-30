@@ -12,12 +12,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, defineEmits, defineProps } from 'vue'
-import { createPopper, type Instance as PopperInstance, type Placement } from '@popperjs/core'
+import { ref, onMounted, onBeforeUnmount, watch, defineProps, defineEmits } from 'vue'
+import {
+  createPopper,
+  type Instance as PopperInstance,
+  type Placement,
+} from '@popperjs/core'
 
 const props = defineProps<{
   /** Element that triggers the hover card (the task row) */
-  reference: HTMLElement | null
+  referenceEl: HTMLElement | null
   /** Preferred placement – defaults to 'bottom' */
   placement?: Placement
   /** Control visibility of the card */
@@ -33,13 +37,16 @@ const cardRef = ref<HTMLElement | null>(null)
 let popperInstance: PopperInstance | null = null
 
 const initPopper = () => {
-  if (props.reference && cardRef.value) {
-    popperInstance = createPopper(props.reference, cardRef.value, {
+  if (props.referenceEl && cardRef.value) {
+    popperInstance = createPopper(props.referenceEl, cardRef.value, {
       placement: props.placement ?? 'bottom',
       modifiers: [
         { name: 'offset', options: { offset: [0, 8] } },
         { name: 'preventOverflow', options: { padding: 8 } },
-        { name: 'flip', options: { fallbackPlacements: ['top', 'right', 'left'] } },
+        {
+          name: 'flip',
+          options: { fallbackPlacements: ['top', 'right', 'left'] },
+        },
       ],
     })
   }
@@ -54,12 +61,12 @@ const destroyPopper = () => {
 
 /* Re‑init popper when reference element changes */
 watch(
-  () => props.reference,
+  () => props.referenceEl,
   (newRef) => {
     destroyPopper()
     if (newRef) initPopper()
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 onMounted(() => {

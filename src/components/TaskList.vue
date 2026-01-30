@@ -12,7 +12,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useTaskStore } from '@/store/task';
-import TaskItem from './TaskItem.vue';
+import TaskItem from '@/components/TaskItem.vue';
 
 const store = useTaskStore();
 const tasks = computed(() => store.tasks);

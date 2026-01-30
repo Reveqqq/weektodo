@@ -3,7 +3,6 @@
   <div
     ref="popperEl"
     class="hover-card"
-    :class="{ 'is-visible': true }"
     @mouseenter="onCardEnter"
     @mouseleave="onCardLeave"
   >
@@ -17,7 +16,7 @@ import { createPopper, type Instance as PopperInstance } from '@popperjs/core'
 
 const props = defineProps<{
   /** Element that triggers the hover card (the task row) */
-  referenceEl: HTMLElement
+  reference: HTMLElement
 }>()
 
 const emit = defineEmits<{
@@ -29,39 +28,25 @@ const popperEl = ref<HTMLElement | null>(null)
 let popperInstance: PopperInstance | null = null
 
 const initPopper = () => {
-  if (props.referenceEl && popperEl.value) {
-    popperInstance = createPopper(props.referenceEl, popperEl.value, {
+  if (props.reference && popperEl.value) {
+    popperInstance = createPopper(props.reference, popperEl.value, {
       placement: 'bottom',
       modifiers: [
-        {
-          name: 'offset',
-          options: { offset: [0, 8] },
-        },
-        {
-          name: 'preventOverflow',
-          options: { boundary: 'clippingParents' },
-        },
-        {
-          name: 'flip',
-          options: { fallbackPlacements: ['top'] },
-        },
+        { name: 'offset', options: { offset: [0, 8] } },
+        { name: 'preventOverflow', options: { boundary: 'clippingParents' } },
+        { name: 'flip', options: { fallbackPlacements: ['top'] } },
       ],
     })
   }
 }
 
 const destroyPopper = () => {
-  if (popperInstance) {
-    popperInstance.destroy()
-    popperInstance = null
-  }
+  popperInstance?.destroy()
+  popperInstance = null
 }
 
-const onCardEnter = () => emit('card-enter')
-const onCardLeave = () => emit('card-leave')
-
 watch(
-  () => props.referenceEl,
+  () => props.reference,
   () => {
     destroyPopper()
     initPopper()
@@ -70,6 +55,9 @@ watch(
 
 onMounted(initPopper)
 onBeforeUnmount(destroyPopper)
+
+const onCardEnter = () => emit('card-enter')
+const onCardLeave = () => emit('card-leave')
 </script>
 
 <style scoped>
@@ -81,8 +69,6 @@ onBeforeUnmount(destroyPopper)
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border-radius: 4px;
   padding: 0.75rem;
-}
-.is-visible {
   opacity: 1;
   transition: opacity 0.15s ease-in-out;
 }
