@@ -70,6 +70,15 @@ def generate_review_comment(diff: str, issue_body: str) -> dict:
         print(f"[Reviewer] LLM error: {e}")
         return {"summary": str(text), "issues": [], "decision": "COMMENT"}
 
+def get_ci_conclusion_from_event(event: dict) -> str:
+    """
+    Возвращает результат CI из workflow_run payload
+    """
+    if "workflow_run" in event:
+        return event["workflow_run"].get("conclusion", "unknown")
+
+    return "unknown"
+
 
 def get_pr_info():
     """Получает информацию о PR из GitHub Actions события"""
@@ -133,29 +142,16 @@ def get_pr_diff(pr):
             diff_parts.append("(binary or no changes)")
     return "\n".join(diff_parts)
 
-def check_ci_status(repo, pr):
-    """Проверяет статус CI/CD"""
-    status = "unknown"
-    for status_check in pr.get_commits()[-1].get_statuses():
-        if status_check.context == "continuous-integration":
-            status = status_check.state  # success, failure, pending
-            break
-    return status
-
-def generate_review(repo, pr):
+def generate_review(repo, pr, event):
     """Генерирует review комментарий"""
 
-    ci_status = "unknown"
-    try:
-        ci_status = check_ci_status(repo, pr)
-    except Exception as e:
-        print(f"[Reviewer] CI status error: {e}")
-    
+    ci_conclusion = get_ci_conclusion_from_event(event)
+
+    # LLM анализ
     if HAS_LLM:
-        # Анализируем с помощью LLM
         issue_body = get_issue_body(repo, pr)
         diff = get_pr_diff(pr)
-        
+
         try:
             result = generate_review_comment(diff, issue_body)
             summary = result.get("summary", "")
@@ -166,28 +162,28 @@ def generate_review(repo, pr):
             issues = []
             decision = "COMMENT"
     else:
-        # Базовый анализ без LLM
         summary = "PR successfully analyzed by AI Reviewer"
         issues = []
         decision = "COMMENT"
-        
-    if ci_status in ["pending", "unknown"]:
+
+    # CI decision override
+    if ci_conclusion in ["queued", "in_progress", None]:
         decision = "COMMENT"
         summary = "CI ещё не завершён. Ревью будет обновлено после завершения CI."
-    elif ci_status != "success":
+    elif ci_conclusion != "success":
         decision = "REQUEST_CHANGES"
         summary = (
-            f"CI failed (`{ci_status}`).\n\n"
+            f"CI failed (`{ci_conclusion}`).\n\n"
             "Исправь ошибки тестов / линтера перед повторным ревью."
         )
 
-    # Формируем комментарий
+    # Comment 
     comment_lines = [
         "## 🤖 AI Reviewer Report",
         "",
         f"**Summary:** {summary}",
         "",
-        f"### CI Status: `{ci_status.upper()}`",
+        f"### CI Status: `{ci_conclusion.upper()}`",
         ""
     ]
 
@@ -197,19 +193,13 @@ def generate_review(repo, pr):
             comment_lines.append(f"- {issue}")
         comment_lines.append("")
 
-    # Добавляем информацию о CI
-    try:
-        ci_status = check_ci_status(repo, pr)
-        comment_lines.append(f"### CI Status: `{ci_status.upper()}`")
-    except:
-        pass
-
     comment_lines.extend([
         f"### Decision: `{decision}`",
         "_Review performed by AI Code Reviewer_"
     ])
 
     return "\n".join(comment_lines), decision
+
 
 def main():
     try:
@@ -219,11 +209,7 @@ def main():
         print(f"[Reviewer] Анализирую PR #{pr_number}: {pr.title}")
         
         # Генерируем review
-        comment_body, decision = generate_review(repo, pr)
-        
-        # Постим комментарий
-        # pr.create_issue_comment(comment_body)
-        # print(f"[Reviewer] Комментарий опубликован")
+        comment_body, decision = generate_review(repo, pr, event)    
         
         # Пытаемся создать официальный review
         event_map = {
