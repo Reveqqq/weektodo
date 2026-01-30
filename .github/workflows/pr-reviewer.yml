@@ -1,8 +1,10 @@
 name: AI Reviewer
 
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_run:
+    workflows: ["PR CI"]
+    types:
+      - completed
 
 jobs:
   review:
