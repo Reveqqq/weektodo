@@ -5,14 +5,54 @@ AI Reviewer Agent - запускается в GitHub Actions в форке пр�
 """
 import os
 import json
+import re
 from github import Github
 
-# Если есть OPENAI API key, используем OpenAI GPT для анализа
-try:
-    from code_agent.llm import generate_review_comment
-    HAS_LLM = True
-except:
-    HAS_LLM = False
+# Проверяем доступность LLM
+HAS_LLM = False
+if os.environ.get("OPENAI_API_KEY"):
+    try:
+        from langchain_openai import ChatOpenAI
+        HAS_LLM = True
+    except ImportError:
+        print("[Reviewer] Warning: langchain_openai not installed, using basic mode")
+        HAS_LLM = False
+
+
+def get_llm():
+    """Создаёт LLM клиент ChatOpenAI"""
+    return ChatOpenAI(
+        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+        api_key=os.environ.get("OPENAI_API_KEY"),
+        base_url=os.environ.get("OPENAI_BASE_URL")
+    )
+
+
+def generate_review_comment(diff: str, issue_body: str) -> dict:
+    """Генерирует review комментарий с анализом PR через LangChain ChatOpenAI"""
+    if not HAS_LLM:
+        return {"summary": "Basic review (LLM not available)", "issues": [], "decision": "COMMENT"}
+    
+    llm = get_llm()
+    prompt = (
+        "Ты - code reviewer для GitHub.\n\n"
+        "Issue была:\n"
+        f"{issue_body}\n\n"
+        "Изменения в PR (diff):\n"
+        f"{diff}\n\n"
+        "Дай краткую оценку в JSON формате:\n"
+        "{\n  \"summary\": \"1-2 предложения об изменениях\",\n  \"issues\": [],\n  \"decision\": \"APPROVE\" or \"REQUEST_CHANGES\"\n}"
+    )
+
+    try:
+        response = llm.invoke(prompt)
+        text = response.content.strip()
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return {"summary": text, "issues": [], "decision": "COMMENT"}
+    except Exception as e:
+        print(f"[Reviewer] LLM error: {e}")
+        return {"summary": f"Error: {e}", "issues": [], "decision": "COMMENT"}
 
 def get_pr_info():
     """Получает информацию о PR из GitHub Actions события"""
@@ -36,7 +76,6 @@ def get_pr_info():
 def get_issue_body(repo, pr):
     """Получает тело Issue, которое закрывает этот PR"""
     # Ищем Closes #123 в описании PR
-    import re
     match = re.search(r'Closes\s+#(\d+)', pr.body or "")
     if match:
         issue_num = int(match.group(1))
