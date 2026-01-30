@@ -1,0 +1,39 @@
+```scss
+.hover-card {
+  position: absolute;
+  z-index: 100;
+  width: 300px;
+  padding: 12px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+
+  &-wrapper {
+    position: relative;
+    display: inline-block;
+
+    &:hover .hover-card {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.2s ease;
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+  }
+}
+
+.task:hover .hover-card {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 100ms;
+}
+```
