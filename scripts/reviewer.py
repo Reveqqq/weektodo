@@ -48,11 +48,7 @@ def generate_review_comment(diff: str, issue_body: str) -> dict:
     if not HAS_LLM:
         return {"summary": "Basic review (LLM not available)", "issues": [], "decision": "COMMENT"}
     
-    llm = get_llm().with_structured_output({
-        "summary": str,
-        "issues": list,
-        "decision": str
-    })
+    llm = get_llm()
     
     prompt = (
         "Ты - code reviewer для GitHub.\n\n"
