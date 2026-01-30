@@ -1,0 +1,41 @@
+```scss
+.task {
+  position: relative;
+  padding: 8px;
+  margin: 4px 0;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--color-background-light);
+    
+    .hover-card {
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0.2s;
+    }
+  }
+
+  &__container {
+    position: relative;
+    padding-right: 16px;
+  }
+
+  .hover-card {
+    position: absolute;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    pointer-events: auto;
+
+    &--top {
+      bottom: calc(100% + 8px);
+    }
+
+    &--bottom {
+      top: calc(100% + 8px);
+    }
+  }
+}
+```

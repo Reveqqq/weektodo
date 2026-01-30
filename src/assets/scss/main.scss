@@ -1,0 +1,42 @@
+Вот обновленный код файла `src/assets/scss/main.scss`:
+
+```scss
+.task {
+  position: relative;
+
+  &:hover {
+    .hover-card {
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0.2s;
+    }
+  }
+
+  .hover-card {
+    position: absolute;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    pointer-events: auto;
+    padding: 8px 0;
+    margin: -8px 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      bottom: -8px;
+      left: -16px;
+      right: -16px;
+    }
+  }
+}
+
+.hover-card {
+  &:hover {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+}
+```
