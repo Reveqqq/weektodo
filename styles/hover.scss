@@ -1,0 +1,45 @@
+```scss
+.hover-card {
+  position: absolute;
+  z-index: 100;
+  width: 320px;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--bg-primary);
+  pointer-events: auto;
+
+  &--bottom {
+    margin-top: 8px;
+  }
+
+  &--top {
+    margin-bottom: 8px;
+  }
+
+  &-container {
+    position: relative;
+    display: inline-block;
+    pointer-events: none;
+
+    &:hover {
+      pointer-events: auto;
+    }
+  }
+
+  &-gap {
+    position: absolute;
+    height: 16px;
+    width: 100%;
+    pointer-events: none;
+
+    &--bottom {
+      top: 100%;
+    }
+
+    &--top {
+      bottom: 100%;
+    }
+  }
+}
+```
