@@ -76,6 +76,7 @@ def get_pr_info():
     token = os.environ.get("GITHUB_TOKEN")
     repo_name = os.environ.get("GITHUB_REPOSITORY")
     event_path = os.environ.get("GITHUB_EVENT_PATH")
+    event_name = os.environ.get("GITHUB_EVENT_NAME")
 
     if not event_path or not os.path.exists(event_path):
         raise ValueError("GITHUB_EVENT_PATH не установлен или не существует")
@@ -83,12 +84,29 @@ def get_pr_info():
     with open(event_path, "r") as f:
         event = json.load(f)
 
-    pr_number = event["pull_request"]["number"]
     gh = Github(token)
     repo = gh.get_repo(repo_name)
-    pr = repo.get_pull(pr_number)
+    if "pull_request" in event:
+        pr_number = event["pull_request"]["number"]
+        pr = repo.get_pull(pr_number)
+        return repo, pr, event
+    # берём SHA коммита и ищем PR
+    sha = None
 
-    return repo, pr, event
+    if "workflow_run" in event:
+        sha = event["workflow_run"]["head_sha"]
+    elif "after" in event:
+        sha = event["after"]
+
+    if not sha:
+        raise ValueError("Не удалось определить SHA коммита")
+
+    pulls = repo.get_pulls(state="open")
+    for pr in pulls:
+        if pr.head.sha == sha:
+            return repo, pr, event
+
+    raise ValueError("PR для данного commit SHA не найден")
 
 def get_issue_body(repo, pr):
     """Получает тело Issue, которое закрывает этот PR"""
