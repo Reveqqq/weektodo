@@ -1,0 +1,35 @@
+```scss
+.task {
+  position: relative;
+
+  &:hover {
+    .hover-card {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  .hover-card {
+    position: absolute;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    width: 100%;
+    min-width: 200px;
+
+    &--top {
+      bottom: calc(100% + 8px);
+    }
+
+    &--bottom {
+      top: calc(100% + 8px);
+    }
+  }
+
+  &-container {
+    padding: 8px;
+    margin: -8px;
+  }
+}
+```
