@@ -1,0 +1,29 @@
+```css
+.task-hover-card {
+  position: absolute;
+  z-index: 100;
+  transition: opacity 0.2s ease;
+  pointer-events: auto;
+}
+
+.task-hover-area {
+  position: relative;
+}
+
+.task-hover-area:hover .task-hover-card,
+.task-hover-card:hover {
+  opacity: 1;
+  visibility: visible;
+}
+
+.task-hover-card-enter-active,
+.task-hover-card-leave-active {
+  transition: all 0.3s ease;
+}
+
+.task-hover-card-enter-from,
+.task-hover-card-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+```
