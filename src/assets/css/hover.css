@@ -1,0 +1,28 @@
+```css
+/* src/assets/css/hover.css */
+
+/* Base styles for the hover card */
+.hover-card {
+  position: absolute;
+  z-index: 1000;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;      /* allow the card to receive mouse events */
+  margin-top: 2px;           /* tiny gap to avoid accidental mouseleave */
+  transition: opacity 0.15s ease-in-out;
+  opacity: 0;
+}
+
+/* Show the card when the task row or the card itself is hovered */
+.task-row:hover .hover-card,
+.hover-card:hover {
+  opacity: 1;
+}
+
+/* Optional: keep the card visible while it has focus (e.g., for keyboard navigation) */
+.hover-card:focus {
+  opacity: 1;
+}
+```
