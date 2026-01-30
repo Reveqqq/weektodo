@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -17,13 +17,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install reviewer dependencies
-        run: |
-          pip install requests PyGithub
+      - name: Install deps
+        run: pip install PyGithub
 
-      - name: Run AI Reviewer
+      - name: Run reviewer
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          python scripts/reviewer.py
+        run: python scripts/reviewer.py
