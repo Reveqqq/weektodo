@@ -3,8 +3,7 @@ name: AI Reviewer
 on:
   workflow_run:
     workflows: ["PR CI"]
-    types:
-      - completed
+    types: [completed]
 
 jobs:
   review:
