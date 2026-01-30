@@ -1,0 +1,30 @@
+```scss
+.hover-card {
+  pointer-events: auto;
+  z-index: 1000;
+  transition: opacity 0.2s ease;
+
+  &--top {
+    margin-bottom: 8px;
+  }
+
+  &--bottom {
+    margin-top: 8px;
+  }
+
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &--hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.task-item:hover .hover-card {
+  opacity: 1;
+  visibility: visible;
+}
+```
