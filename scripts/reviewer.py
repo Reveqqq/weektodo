@@ -161,6 +161,7 @@ def generate_review(repo, pr):
         summary = (
             f"CI failed (`{ci_status}`).\n\n"
             "Исправь ошибки тестов / линтера перед повторным ревью."
+        )
 
     # Формируем комментарий
     comment_lines = [
