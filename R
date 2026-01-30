@@ -1,0 +1,11 @@
+```
+...
+- Workspaces
+- Themes
+
+## Sponsors
+
+WeekToDo is an GPL-licensed open source project with its ongoing development made possible entirely by users support and sponsors. If you'd like to join them, please consider [ sponso
+
+test line
+```
