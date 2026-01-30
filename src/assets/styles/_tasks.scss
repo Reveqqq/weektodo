@@ -1,0 +1,52 @@
+```scss
+/* src/assets/styles/_tasks.scss */
+
+/* ------------------------------------------------------------------
+   Existing task related styles (preserved from the original file)
+   ------------------------------------------------------------------ */
+
+/* ... (original styles) ... */
+
+/* ------------------------------------------------------------------
+   Hover‑card enhancements
+   ------------------------------------------------------------------ */
+
+/* Обёртка задачи, чтобы hover‑card находилась в том же DOM‑дереве */
+.task-wrapper {
+  position: relative;               // нужен для позиционирования карточки
+  display: block;
+}
+
+/* Стили для карточки, появляющейся при hover */
+.hover-card {
+  position: absolute;
+  top: 100%;                        // сразу под задачей
+  left: 0;
+  min-width: 260px;
+  margin-top: 0;                    // убираем промежуток, вызывающий mouseleave
+  pointer-events: auto;            // карточка реагирует на курсор
+  z-index: 20;                      // над другими элементами списка
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease-in-out,
+              visibility 0.15s ease-in-out;
+}
+
+/* Видимая карточка */
+.hover-card.is-visible,
+.hover-card.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* При необходимости скрываем переходы в режиме без анимаций */
+@media (prefers-reduced-motion: reduce) {
+  .hover-card {
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   End of hover‑card enhancements
+   ------------------------------------------------------------------ */
+```

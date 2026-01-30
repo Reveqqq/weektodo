@@ -1,0 +1,41 @@
+/* src/assets/styles.css */
+
+.task-wrapper {
+  position: relative;
+}
+
+.hover-card {
+  position: absolute;
+  z-index: 1000;
+  pointer-events: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hover-card.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Ensure task rows stay on top of other content */
+.task-item {
+  position: relative;
+  z-index: 1;
+}
+
+/* Optional: smooth fade‑in for the hover card */
+.hover-card-enter-active,
+.hover-card-leave-active {
+  transition: opacity 0.2s ease;
+}
+.hover-card-enter-from,
+.hover-card-leave-to {
+  opacity: 0;
+}
+.hover-card-enter-to,
+.hover-card-leave-from {
+  opacity: 1;
+}
