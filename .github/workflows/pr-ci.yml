@@ -1,0 +1,33 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: |
+          npm install --global yarn
+          yarn install
+
+      - name: Run tests
+        run: |
+          yarn test --if-present
+
+      - name: Lint
+        run: |
+          yarn lint --if-present
